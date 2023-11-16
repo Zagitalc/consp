@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <title>Conspiracy Theory Classifier</title>
@@ -11,8 +11,8 @@
         <input type="text" id="title" name="title"><br><br>
         <label for="channel_title">Channel Title:</label>
         <input type="text" id="channel_title" name="channel_title"><br><br>
-        <!-- <label for="view_count">View Count:</label> -->
-        <!-- <input type="number" id="view_count" name="view_count"><br><br> -->
+        <label for="view_count">View Count:</label> -->
+        <!-- <input type="number" id="view_count" name="view_count"><br><br>
         <label for="tags">Tags:</label>
         <input type="text" id="tags" name="tags"><br><br>
         <label for="description">Description:</label>
@@ -22,4 +22,41 @@
     <div id="result"></div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Conspiracy Theory Classifier</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Optional: Add custom styles here */
+        .input-text {
+            width: 80%;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Conspiracy Theory Classifier</h1>
+        <h3 class="text-center">This is a basic Conspiracy Theory Classifier</h3>
+        <form id="textForm">
+            <div class="form-group">
+                <label for="inputText">Input Text:</label>
+                <textarea class="form-control input-text" id="inputText" name="inputText" rows="4" placeholder="Enter your text here..."></textarea>
+            </div>
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-primary">Classify</button>
+            </div>
+        </form>
+        <div id="result" class="mt-4"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
 </html>
+

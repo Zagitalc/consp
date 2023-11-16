@@ -6,20 +6,12 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         resultDiv.innerHTML = 'Classifying...';
 
-        // Get input values from the form fields
-        const title = document.getElementById('title').value;
-        const channelTitle = document.getElementById('channel_title').value;
-        // const viewCount = parseFloat(document.getElementById('view_count').value);
-        const tags = document.getElementById('tags').value;
-        const description = document.getElementById('description').value;
+        // single text input 
+        const inputText = document.getElementById('inputText').value;
 
-        // Organize JSON data
+        // JSON response format 
         const inputData = {
-            "title": title,
-            "channel_title": channelTitle,
-            // "view_count": viewCount,
-            "tags": tags,
-            "description": description
+            "text": inputText
         };
 
         const response = await fetch('/classify', {
@@ -33,8 +25,8 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const data = await response.json();
 
-            if (data.result !== undefined) {
-                const classification = data.result === -1 ? "Non Conspiracy" : "Potential Conspiracy";
+            if (data.prediction !== undefined) {
+                const classification = data.prediction === 0 ? "Non Conspiracy" : "Potential Conspiracy";
                 resultDiv.innerHTML = `Classification: ${classification}`;
             } else {
                 resultDiv.innerHTML = 'Classification failed.';
