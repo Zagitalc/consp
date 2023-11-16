@@ -26,7 +26,24 @@ def classify():
         # Classify the text
         result = consp_classifier.predict(text_tfidf)
 
-        return jsonify({'prediction': int(result[0])})
+
+        # if result is Conspiracy, find key words 
+        print(result[0])
+        if result[0] == 0 or result[0]== -1 or result[0]== -1:  # -1 as the label for "Conspiracy Theory"
+            
+            feature_log_probs = consp_classifier.feature_log_prob_
+            class_index = 0  #index based on label encoding
+            feature_names = tfidf_vectorizer.get_feature_names()
+            feature_probabilities = dict(zip(feature_names, feature_log_probs[class_index]))
+            sorted_features = sorted(feature_probabilities.items(), key=lambda x: x[1], reverse=True)
+            top_n = 10  # number of top words = 10
+            rankedWords = [word for word, _ in sorted_features[:top_n]]
+            print("ranked worss",rankedWords)
+
+        else:
+            rankedWords=[]
+
+        return jsonify({'classPred': int(result[0]),'rankedWords':rankedWords})
 
     else:
         return jsonify({'error': 'Invalid input format. Please provide the required field "text".'})
