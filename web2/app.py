@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import joblib
 import os
+import re
 
 app = Flask(__name__)
 
@@ -19,6 +20,8 @@ def classify():
 
     if "text" in data:
         text = data["text"]
+        text=re.sub(r'http\S+', '', text, flags=re.MULTILINE)
+
 
         # Vectorize the input text
         text_tfidf = tfidf_vectorizer.transform([text])
@@ -29,21 +32,35 @@ def classify():
 
         # if result is Conspiracy, find key words 
         print(result[0])
-        if result[0] == 0 or result[0]== -1 or result[0]== -1:  # -1 as the label for "Conspiracy Theory"
+        if result[0] == 0 or result[0]== 1:  # 0 as the label for "Non Conspiracy Theory and 1 is Conspiracy Theory
             
             feature_log_probs = consp_classifier.feature_log_prob_
-            class_index = 0  #index based on label encoding
+            class_index = 1  #index based on label encoding
             feature_names = tfidf_vectorizer.get_feature_names()
+            # print(feature_names)
             feature_probabilities = dict(zip(feature_names, feature_log_probs[class_index]))
+            print(feature_probabilities)
+            # print(feature_probabilities,feature_names)
             sorted_features = sorted(feature_probabilities.items(), key=lambda x: x[1], reverse=True)
-            top_n = 10  # number of top words = 10
-            rankedWords = [word for word, _ in sorted_features[:top_n]]
-            print("ranked worss",rankedWords)
+            print(sorted_features)
+            # print(sorted_features)
+            top = 10  # number of top words = 10
+            rankedWords = [word for word, _ in sorted_features[:top]]
+            ranked_prob = [_ for word, _ in sorted_features[:top]]
+            print(rankedWords)
+            # print(ranked_prob)
+
+            word_data=[]
+            for word in rankedWords:
+                word_data.append(str(feature_probabilities[word])+" "+word)   
+            
+            print(word_data)
 
         else:
             rankedWords=[]
 
-        return jsonify({'classPred': int(result[0]),'rankedWords':rankedWords})
+
+        return jsonify({'classPred': int(result[0]),'rankedWords':word_data})
 
     else:
         return jsonify({'error': 'Invalid input format. Please provide the required field "text".'})
