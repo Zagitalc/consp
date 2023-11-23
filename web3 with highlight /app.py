@@ -1,3 +1,4 @@
+import nltk
 from flask import Flask, render_template, request, jsonify
 import joblib
 import os
@@ -20,53 +21,51 @@ def classify():
 
     if "text" in data:
         text = data["text"]
-        text=re.sub(r'http\S+', '', text, flags=re.MULTILINE)
+        text = re.sub(r'http\S+', '', text, flags=re.MULTILINE)
 
+        sentences = nltk.sent_tokenize(text)
+        ranked_words = []
+        num_sentences = 0
+        num_consp_theory = 0
 
-        # Vectorize the input text
-        text_tfidf = tfidf_vectorizer.transform([text])
+        for sentence in sentences:
+            sentence_tfidf = tfidf_vectorizer.transform([sentence])
+            result = consp_classifier.predict(sentence_tfidf)
 
-        # Classify the text
-        result = consp_classifier.predict(text_tfidf)
+            if result[0] == 0 or result[0] == 1:  # Conspiracy classification
+                if result[0] == 1:
+                    num_consp_theory += 1
 
+                feature_names = tfidf_vectorizer.get_feature_names()
+                word_indices = sentence_tfidf.indices
+                word_scores = sentence_tfidf.data
 
-        # if result is Conspiracy, find key words 
-        print(result[0])
-        if result[0] == 0 or result[0]== 1:  # 0 as the label for "Non Conspiracy Theory and 1 is Conspiracy Theory
-            
-            feature_log_probs = consp_classifier.feature_log_prob_
-            class_index = 1  #index based on label encoding
-            feature_names = tfidf_vectorizer.get_feature_names()
-            # print(feature_names)
-            feature_probabilities = dict(zip(feature_names, feature_log_probs[class_index]))
-            # print(feature_probabilities)
-            # print(feature_probabilities,feature_names)
-            sorted_features = sorted(feature_probabilities.items(), key=lambda x: x[1], reverse=True)
-            # print(sorted_features)
-            # print(sorted_features)
-            top = 10  # number of top words = 10
-            rankedWords = [word for word, _ in sorted_features[:top]]
-            
-            
-            ranked_prob = [_ for word, _ in sorted_features[:top]]
-            # print(rankedWords)
-            # print(ranked_prob)
+                tfidf_scores = {}
+                for idx, score in zip(word_indices, word_scores):
+                    word = feature_names[idx]
+                    tfidf_scores[word] = score
 
-            word_data=[]
-            for word in rankedWords:
-                #feature probalilities in naive bayes
-                word_data.append(str(feature_probabilities[word])+" "+word)   
-            
-            # print(word_data)
+                sorted_words = sorted(tfidf_scores.items(), key=lambda x: x[1], reverse=True)
+                top_n = 10
+                ranked_words.append([word[0] for word in sorted_words[:top_n]])
+                top_scores = [round(word[1], 2) for word in sorted_words[:top_n]]
+                print(f"Sentence {num_sentences + 1}: {sentence}")
+                print(f"Classification result: {result[0]}")
+                print(f"Top words: {ranked_words[-1]}")
+                print(f"Top scores: {top_scores}")
 
-        else:
-            rankedWords=[]
+            num_sentences += 1
 
+        conspiracy_percentage = (num_consp_theory / num_sentences) * 100 if num_sentences > 0 else 0
+        print(f"Conspiracy Sentence Percentage: {round(conspiracy_percentage,2)}%")
+        print(f"there are {num_consp_theory} Conspiracy Sentence in {num_sentences}" )
 
-        return jsonify({'classPred': int(result[0]),'rankedWords':word_data})
-
+        return jsonify({'rankedWords': ranked_words, 'scores': top_scores, 'conspiracyPercentage': round(conspiracy_percentage,2)})
+    
     else:
         return jsonify({'error': 'Invalid input format. Please provide the required field "text".'})
+
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
