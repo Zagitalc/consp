@@ -50,12 +50,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (data.rankedWords !== undefined && data.rankedWords.length > 0) {
                 data.rankedWords.forEach((words, index) => {
+                    const sentences = data.sentences;
+
                     const sentenceData = document.createElement('div');
                     const sentenceHeader = document.createElement('h3');
                     sentenceHeader.textContent = `Sentence ${index + 1}:`;
-                    sentenceData.appendChild(sentenceHeader);
 
+                    sentenceData.appendChild(sentenceHeader);
+                    // sentenceData.appendChild(Object.keys(sentences[index]));
+                    console.log(Object.keys(sentences[index]));
                     const sentenceInfoList = document.createElement('ul');
+
                     words.forEach((wordObj) => {
                         const word = Object.keys(wordObj)[0];
                         const score = Object.values(wordObj)[0];
