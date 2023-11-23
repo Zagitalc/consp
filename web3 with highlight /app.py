@@ -39,17 +39,17 @@ def classify():
             feature_names = tfidf_vectorizer.get_feature_names()
             # print(feature_names)
             feature_probabilities = dict(zip(feature_names, feature_log_probs[class_index]))
-            print(feature_probabilities)
+            # print(feature_probabilities)
             # print(feature_probabilities,feature_names)
             sorted_features = sorted(feature_probabilities.items(), key=lambda x: x[1], reverse=True)
-            print(sorted_features)
+            # print(sorted_features)
             # print(sorted_features)
             top = 10  # number of top words = 10
             rankedWords = [word for word, _ in sorted_features[:top]]
             
             
             ranked_prob = [_ for word, _ in sorted_features[:top]]
-            print(rankedWords)
+            # print(rankedWords)
             # print(ranked_prob)
 
             word_data=[]
@@ -57,7 +57,7 @@ def classify():
                 #feature probalilities in naive bayes
                 word_data.append(str(feature_probabilities[word])+" "+word)   
             
-            print(word_data)
+            # print(word_data)
 
         else:
             rankedWords=[]

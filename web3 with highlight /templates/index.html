@@ -1,0 +1,51 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Conspiracy Theory Classifier</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Optional: Add custom styles here */
+        .input-text {
+            width: 80%;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Conspiracy Theory Classifier</h1>
+        <h3 class="text-center">This is a basic Conspiracy Theory Classifier</h3>
+        <form id="textForm">
+            <div class="form-group">
+                <label for="inputText">Input Text:</label>
+                <textarea class="form-control input-text" id="inputText" name="inputText" rows="4" placeholder="Enter your text here..."></textarea>
+            </div>
+            <div class="text-center mt-3">
+                <button type="submit" data-toggle="collapse" class="btn btn-primary" href="#userText">Classify</button>
+            </div>
+        </form>
+        <div id="result" class="mt-4"></div>
+        
+        <div id="userText" class="collapse" >
+            <div class="card card-body">
+                <h4>Your Text:</h4>
+                <p id="userTextInput"></p>
+            </div>
+            <div class="card card-body">
+                <h4>Key words</h4>
+                <p id="rankedWords"></p>
+            </div>
+            
+           
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="static/script.js"></script>
+</body>
+</html>
+
