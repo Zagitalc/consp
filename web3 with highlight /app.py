@@ -26,7 +26,7 @@ def classify():
         sentences = nltk.sent_tokenize(text)
         ranked_words = []
         num_sentences = 0
-        num_consp_theory = 0
+        num_consp_sentences = 0
 
         for sentence in sentences:
             sentence_tfidf = tfidf_vectorizer.transform([sentence])
@@ -34,7 +34,7 @@ def classify():
 
             if result[0] == 0 or result[0] == 1:  # Conspiracy classification
                 if result[0] == 1:
-                    num_consp_theory += 1
+                    num_consp_sentences += 1
 
                 feature_names = tfidf_vectorizer.get_feature_names()
                 word_indices = sentence_tfidf.indices
@@ -47,25 +47,29 @@ def classify():
 
                 sorted_words = sorted(tfidf_scores.items(), key=lambda x: x[1], reverse=True)
                 top_n = 10
-                ranked_words.append([word[0] for word in sorted_words[:top_n]])
-                top_scores = [round(word[1], 2) for word in sorted_words[:top_n]]
+                ranked_words.append([{word[0]: round(word[1], 2)} for word in sorted_words[:top_n]])
                 print(f"Sentence {num_sentences + 1}: {sentence}")
                 print(f"Classification result: {result[0]}")
                 print(f"Top words: {ranked_words[-1]}")
-                print(f"Top scores: {top_scores}")
 
             num_sentences += 1
 
-        conspiracy_percentage = (num_consp_theory / num_sentences) * 100 if num_sentences > 0 else 0
+        conspiracy_percentage = (num_consp_sentences / num_sentences) * 100 if num_sentences > 0 else 0
+        overall_classification = 1 if conspiracy_percentage > 50 else 0
         print(f"Conspiracy Sentence Percentage: {round(conspiracy_percentage,2)}%")
-        print(f"there are {num_consp_theory} Conspiracy Sentence in {num_sentences}" )
+        print(f"Conspiracy classification overall : {overall_classification}")
 
-        return jsonify({'rankedWords': ranked_words, 'scores': top_scores, 'conspiracyPercentage': round(conspiracy_percentage,2)})
+        print(f"there are {num_consp_sentences} Conspiracy Sentence in {num_sentences}")
+        print(ranked_words)
+
+        return jsonify({'overall_classification': overall_classification,
+                        'rankedWords': ranked_words,
+                        'num_consp_sentences': num_consp_sentences,
+                        'num_sentences': num_sentences,
+                        'conspiracyPercentage': round(conspiracy_percentage, 2)})
     
     else:
         return jsonify({'error': 'Invalid input format. Please provide the required field "text".'})
-
-    
 
 if __name__ == '__main__':
     app.run(debug=True)
