@@ -4,7 +4,7 @@
 
 *Early-stage implementation of conspiracy theory detection using NLP*
 
-## Project Overview
+### 📌 Project Overview
 This project aims to analyze linguistic patterns in conspiracy theories using Natural Language Processing (NLP). The early-stage implementation utilizes TF-IDF feature extraction and a Random Forest classifier, with a Flask-based API for text classification.
 
 ## Key Features in the First Draft:
