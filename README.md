@@ -41,7 +41,7 @@ This project aims to analyze linguistic patterns in conspiracy theories using Na
 **Required Libraries:**
 ```bash
 pip install flask joblib nltk sklearn numpy
-
+```
 To run the server locally, execute:
 ```bash
 python app.py
